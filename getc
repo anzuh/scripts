@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+xf=$(grep '^#include.*/colorschemes/' $HOME/.config/xorg/res)
+xf=${xf:25}
+xf=$(echo $xf | tr -d '"')
+
+for var in "$@"; do
+	case $var in
+		fg) grep "*.foreground:" $HOME/.config/xorg/colorschemes/$xf | cut -d "#" -f 2 ;;
+		bg) grep "*.background:" $HOME/.config/xorg/colorschemes/$xf | cut -d "#" -f 2 ;;
+		*) [[ $var -le 15 ]] && grep "*.color$var:" $HOME/.config/xorg/colorschemes/$xf | cut -d "#" -f 2 || echo "no color defined for $var." ;;
+	esac
+done

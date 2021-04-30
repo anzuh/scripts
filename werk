@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# dependencies: at cron
+
+time=$(date +%H%M)
+
+if [ "$time" -lt 1545 ]; then
+	echo 'notify-send -u critical "Time to head home."' | at 15:45 &>/dev/null && echo "Added head home job."
+	if [ "$time" -lt 1115 ]; then
+		echo 'notify-send -u critical "Lunch time!"' | at 11:15 &>/dev/null && echo "Added lunch job."
+	else
+		echo "Skipping lunch job."
+	fi
+else
+	echo "Skipping head home job."
+fi

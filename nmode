@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# dependencies: xorg-xbacklight kbdlight
+
+# dep check
+hash xbacklight &>/dev/null || { echo "xorg-xbacklight not installed"; status=1; }
+hash kbdlight &>/dev/null || { echo "kbdlight not installed."; status=1; }
+
+if [[ $status -eq 1 ]]; then
+	exit 1
+fi
+
+bl=$(xbacklight | cut -d "." -f 1)
+
+if [[ $bl -lt 25 ]]; then
+	xbacklight -set 100
+	kbdlight off
+else
+	xbacklight -set 20
+	kbdlight max
+fi

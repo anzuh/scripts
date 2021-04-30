@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# dependencies: getc dmenu
+
+fg=$(getc fg)
+bg=$(getc bg)
+
+dmenu_run -fn "artwiz lemon-8" -nb "#$bg" -nf "#$fg" -sb "#$fg" -sf "#$bg" -p "Run:" -i -b

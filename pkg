@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# dependencies: pacman
+
+[[ $(pacman -Qdtq | wc -l ) -ne 0 ]] && ( echo "orphans found."; sudo pacman -Rns $(pacman -Qtdq) )
+
+listPkgs() {
+	pkgs=$(comm -23 <(pacman -Qqt | sort) <(pacman -Sqg base base-devel | sort))
+	echo "$pkgs" | tr " " "\\n"
+}
+
+usage() {
+cat << EOF
+usage: $(basename "$0") -l -c -h
+	-l	List packages. Default behaviour with no arguments.
+	-c	Only show package count
+	-h	Show this help
+EOF
+}
+
+[ $# -eq 0 ] && ( listPkgs; exit 0 )
+
+while getopts ":hcl" opt; do
+	case "$opt" in
+		"c") pacman -Q | wc -l ;;
+		"h") usage ;;
+		"l") listPkgs ;;
+		"?") echo "Invalid argument -$OPTARG." && usage ;;
+	esac
+done

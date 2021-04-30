@@ -1,0 +1,27 @@
+#!/bin/bash
+
+#
+# 	Print out ID.txt files and append app list.
+#
+
+printf "ID\tOS\tVERSION\tTYPE\tMAPPED DISCS\tV DISK\tANTI VIRUS\tINTERNET\tCITRIX\n" > long_list.csv
+
+for f in *.txt
+do
+	echo "Parsing $f!"
+	fn="${f%.*}"
+	ext=".csv"
+	while read line
+	do
+		printf "$line" | cut -d":" -f 2 | tr "\n" "\t" >>  long_list.csv
+	done < "$f"
+	printf "\nAPP LIST\nName\tPublisher\tInstall Date\tSize\tVersion\n" >> long_list.csv
+	if test -e ./applist/$fn$ext; then
+		cat ./applist/$fn$ext >> long_list.csv
+		printf "\n" >> long_list.csv
+	else
+		printf "NOT PRESENT\n\n" >> long_list.csv
+	fi
+done
+
+echo "Done!"

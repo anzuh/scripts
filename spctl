@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+# dependencies: spotify dunst
+
+usage() {
+cat << EOF
+  playerctl [next|prev|toggle]
+  next    next song
+  prev    previous song
+  toggle  toggle playback
+  up      volume up
+  down    volume down
+  mute    toggle volue
+EOF
+}
+
+getVol() {
+	vol=$(awk -F"[][]" '/dB/ { print $2 }' <(amixer sget Master))
+	state=$(awk -F"[][]" '/dB/ { print $6 }' <(amixer sget Master))
+
+	if [[ $state = "on" ]]; then
+		dunstify -r 2 -u low "$vol"
+	else
+		dunstify -r 2 -u low "vol muted"
+	fi
+}
+
+if [[ "$#" -lt 1 ]]; then
+	usage
+	exit 1
+fi
+
+echo "$1"
+
+case $1 in
+	"next") dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next; dunstify -r 3 -u low "spotify $1" ;;
+	"prev") dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous; dunstify -r 3 -u low "spotify $1" ;;
+	"toggle") dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause; dunstify -r 3 -u low "spotify $1" ;;
+	"up") amixer -q set Master 5%+; getVol ;;
+	"down") amixer -q set Master 5%-; getVol ;;
+	"mute") amixer -q set Master toggle; getVol ;;
+	*) usage ;;
+esac

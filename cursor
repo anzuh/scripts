@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# dependencies: wmutils
+
+B=$(wattr b $(pfw))
+
+WX=$(wattr x $(pfw))
+WY=$(wattr y $(pfw))
+
+WW=$(wattr w $(pfw))
+WH=$(wattr h $(pfw))
+
+case $1 in
+	br) wmp -a $(( WX + WW + ( B * 2 ) )) $(( WY + WH + ( B * 2 ) )) ;;
+	bl) wmp -a $WX $(( WY + WH + ( B * 2 ) )) ;;
+	tr) wmp -a $(( WX + WW + ( B * 2 ) )) $WY ;;
+	tl) wmp -a $WX $WY ;;
+	m) wmp -a $(( WX + ( WW / 2 ) )) $(( WY + ( WH / 2 ) )) ;;
+esac

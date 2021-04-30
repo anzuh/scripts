@@ -1,0 +1,15 @@
+#!/bin/bash
+
+printf "ID\tOS\tVERSION\tTYPE\tMAPPED DISCS\tV DISK\tANTI VIRUS\tINTERNET\tCITRIX\n" > list.csv
+
+for f in *.txt
+do
+	echo "Parsing $f!"
+	while read line
+	do
+		printf "$line" | cut -d":" -f 2 | tr "\n" "\t" >>  list.csv
+	done < "$f"
+	printf "\n" >> list.csv
+done
+
+echo "Done!"
